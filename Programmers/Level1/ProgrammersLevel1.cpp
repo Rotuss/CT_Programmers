@@ -230,123 +230,183 @@ using namespace std;
 //}
 
 // 개인정보 수집 유효기간 1.
-vector<int> solution(string today, vector<string> terms, vector<string> privacies)
-{
-    vector<int> answer;
-    // 약관 종류 관리
-    map<char, int> m_termtype;
-
-    // 오늘 날짜
-    int Ytoday = stoi(today.substr(0, 4));
-    int Mtoday = stoi(today.substr(5, 2));
-    int Dtoday = stoi(today.substr(8, 2));
-
-    // 약관 유효기간 등록
-    for (int i = 0; i < terms.size(); ++i)
-    {
-        m_termtype.insert(make_pair(terms[i][0], stoi(terms[i].substr(2, terms[i].size()))));
-    }
-
-    for (int i = 0; i < privacies.size(); ++i)
-    {
-        // 약관 시작 날짜
-        int Yterm = stoi(privacies[i].substr(0, 4));
-        int Mterm = stoi(privacies[i].substr(5, 2));
-        int Dterm = stoi(privacies[i].substr(8, 2));
-
-        // 약관 종료 기간
-        int month = m_termtype[privacies[i][11]];
-        while (true)
-        {
-            if (0 == month)
-            {
-                break;
-            }
-            else if (1 == month)
-            {
-                Dterm += 27;
-            }
-            else if(1 < month)
-            {
-                Dterm += 28;
-            }
-
-            if (Dterm > 28)
-            {
-                Dterm -= 28;
-                ++Mterm;
-            }
-            if (Mterm > 12)
-            {
-                Mterm -= 12;
-                ++Yterm;
-            }
-            --month;
-        }
-
-        // 파기 판별
-        if (Ytoday > Yterm)
-        {
-            answer.push_back(i + 1);
-        }
-        else if (Ytoday == Yterm && Mtoday > Mterm)
-        {
-            answer.push_back(i + 1);
-        }
-        else if (Ytoday == Yterm && Mtoday == Mterm && Dtoday > Dterm)
-        {
-            answer.push_back(i + 1);
-        }
-
-    }
-
-    return answer;
-}
+//vector<int> solution(string today, vector<string> terms, vector<string> privacies)
+//{
+//    vector<int> answer;
+//    // 약관 종류 관리
+//    map<char, int> m_termtype;
+//
+//    // 오늘 날짜
+//    int Ytoday = stoi(today.substr(0, 4));
+//    int Mtoday = stoi(today.substr(5, 2));
+//    int Dtoday = stoi(today.substr(8, 2));
+//
+//    // 약관 유효기간 등록
+//    for (int i = 0; i < terms.size(); ++i)
+//    {
+//        m_termtype.insert(make_pair(terms[i][0], stoi(terms[i].substr(2, terms[i].size()))));
+//    }
+//
+//    for (int i = 0; i < privacies.size(); ++i)
+//    {
+//        // 약관 시작 날짜
+//        int Yterm = stoi(privacies[i].substr(0, 4));
+//        int Mterm = stoi(privacies[i].substr(5, 2));
+//        int Dterm = stoi(privacies[i].substr(8, 2));
+//
+//        // 약관 종료 기간
+//        int month = m_termtype[privacies[i][11]];
+//        while (true)
+//        {
+//            if (0 == month)
+//            {
+//                break;
+//            }
+//            else if (1 == month)
+//            {
+//                Dterm += 27;
+//            }
+//            else if(1 < month)
+//            {
+//                Dterm += 28;
+//            }
+//
+//            if (Dterm > 28)
+//            {
+//                Dterm -= 28;
+//                ++Mterm;
+//            }
+//            if (Mterm > 12)
+//            {
+//                Mterm -= 12;
+//                ++Yterm;
+//            }
+//            --month;
+//        }
+//
+//        // 파기 판별
+//        if (Ytoday > Yterm)
+//        {
+//            answer.push_back(i + 1);
+//        }
+//        else if (Ytoday == Yterm && Mtoday > Mterm)
+//        {
+//            answer.push_back(i + 1);
+//        }
+//        else if (Ytoday == Yterm && Mtoday == Mterm && Dtoday > Dterm)
+//        {
+//            answer.push_back(i + 1);
+//        }
+//
+//    }
+//
+//    return answer;
+//}
 
 // 개인정보 수집 유효기간 2.
-vector<int> solution(string today, vector<string> terms, vector<string> privacies)
+//vector<int> solution(string today, vector<string> terms, vector<string> privacies)
+//{
+//    vector<int> answer;
+//    // 약관 종료 최종 확인용
+//    vector<int> v_termcheck;
+//    // 약관 종류 관리
+//    map<char, int> m_termtype;
+//
+//    // 오늘 날짜
+//    int Ytoday = stoi(today.substr(0, 4));
+//    int Mtoday = stoi(today.substr(5, 2));
+//    int Dtoday = stoi(today.substr(8, 2));
+//    int Ttoday = Ytoday * 12 * 28 + (Mtoday - 1) * 28 + Dtoday;
+//
+//    // 약관 유효기간 등록
+//    for (int i = 0; i < terms.size(); ++i)
+//    {
+//        m_termtype.insert(make_pair(terms[i][0], stoi(terms[i].substr(2, terms[i].size()))));
+//    }
+//
+//    for (int i = 0; i < privacies.size(); ++i)
+//    {
+//        // 약관 시작 날짜
+//        int Yterm = stoi(privacies[i].substr(0, 4));
+//        int Mterm = stoi(privacies[i].substr(5, 2));
+//        int Dterm = stoi(privacies[i].substr(8, 2));
+//        int month = m_termtype[privacies[i][11]];
+//
+//        // 약관 종료 기간 연산
+//        int termend = Yterm * 12 * 28 + (Mterm - 1) * 28 + Dterm + (month * 28 - 1);
+//        v_termcheck.push_back(termend);
+//
+//    }
+//
+//    // 파기 판별
+//    for (int i = 0; i < v_termcheck.size(); ++i)
+//    {
+//        // 오늘 날짜가 종료 기간보다 큰 경우 파기
+//        if (Ttoday > v_termcheck[i])
+//        {
+//            answer.push_back(i + 1);
+//        }
+//    }
+//
+//    return answer;
+//}
+
+// 성격 유형 검사하기
+string solution(vector<string> survey, vector<int> choices)
 {
-    vector<int> answer;
-    // 약관 종료 최종 확인용
-    vector<int> v_termcheck;
-    // 약관 종류 관리
-    map<char, int> m_termtype;
+    string answer = "";
+    map<char, int> m_Type = { {'R',0}, {'T',0},
+                            {'C',0}, {'F',0},
+                            {'J',0}, {'M',0},
+                            {'A',0}, {'N',0} };
 
-    // 오늘 날짜
-    int Ytoday = stoi(today.substr(0, 4));
-    int Mtoday = stoi(today.substr(5, 2));
-    int Dtoday = stoi(today.substr(8, 2));
-    int Ttoday = Ytoday * 12 * 28 + (Mtoday - 1) * 28 + Dtoday;
-
-    // 약관 유효기간 등록
-    for (int i = 0; i < terms.size(); ++i)
+    // 1)매우 비동의 3, 2)비동의 2, 3)약간 비동의 1, 4)모르겠음 0, 5)약간 동의 1, 6)동의 2, 7)매우 동의 3
+    for (int i = 0; i < survey.size(); ++i)
     {
-        m_termtype.insert(make_pair(terms[i][0], stoi(terms[i].substr(2, terms[i].size()))));
-    }
-
-    for (int i = 0; i < privacies.size(); ++i)
-    {
-        // 약관 시작 날짜
-        int Yterm = stoi(privacies[i].substr(0, 4));
-        int Mterm = stoi(privacies[i].substr(5, 2));
-        int Dterm = stoi(privacies[i].substr(8, 2));
-        int month = m_termtype[privacies[i][11]];
-
-        // 약관 종료 기간 연산
-        int termend = Yterm * 12 * 28 + (Mterm - 1) * 28 + Dterm + (month * 28 - 1);
-        v_termcheck.push_back(termend);
-
-    }
-
-    // 파기 판별
-    for (int i = 0; i < v_termcheck.size(); ++i)
-    {
-        // 오늘 날짜가 종료 기간보다 큰 경우 파기
-        if (Ttoday > v_termcheck[i])
+        switch (choices[i])
         {
-            answer.push_back(i + 1);
+        // case 1~3은 설문지 앞쪽 점수 추가
+        case 1:
+        {
+            m_Type[survey[i][0]] += 3;
+        }
+            break;
+        case 2:
+        {
+            m_Type[survey[i][0]] += 2;
+        }
+            break;
+        case 3:
+        {
+            m_Type[survey[i][0]] += 1;
+        }
+            break;
+        // case 5~7은 설문지 뒷쪽 점수 추가
+        case 5:
+        {
+            m_Type[survey[i][1]] += 1;
+        }
+            break;
+        case 6:
+        {
+            m_Type[survey[i][1]] += 2;
+        }
+            break;
+        case 7:
+        {
+            m_Type[survey[i][1]] += 3;
+        }
+            break;
+        default:
+            break;
         }
     }
+
+    // 타입별 비교 후 타입 결정
+    m_Type['R'] >= m_Type['T'] ? answer.push_back('R') : answer.push_back('T');
+    m_Type['C'] >= m_Type['F'] ? answer.push_back('C') : answer.push_back('F');
+    m_Type['J'] >= m_Type['M'] ? answer.push_back('J') : answer.push_back('M');
+    m_Type['A'] >= m_Type['N'] ? answer.push_back('A') : answer.push_back('N');
 
     return answer;
 }
@@ -367,8 +427,12 @@ int main(void)
     solution({ "OSO","OOO","OXO","OOO" }, { "E 2","S 3","W 1" });*/
 
     // 개인정보 수집 유효기간
-    solution("2022.05.19", { "A 6", "B 12", "C 3" }, { "2021.05.02 A", "2021.07.01 B", "2022.02.19 C", "2022.02.20 C" });
-    solution("2020.01.01", { "Z 3", "D 5" }, { "2019.01.01 D", "2019.11.15 Z", "2019.08.02 D", "2019.07.01 D", "2018.12.28 Z" });
+    /*solution("2022.05.19", { "A 6", "B 12", "C 3" }, { "2021.05.02 A", "2021.07.01 B", "2022.02.19 C", "2022.02.20 C" });
+    solution("2020.01.01", { "Z 3", "D 5" }, { "2019.01.01 D", "2019.11.15 Z", "2019.08.02 D", "2019.07.01 D", "2018.12.28 Z" });*/
+
+    // 성격 유형 검사하기
+    solution({ "AN", "CF", "MJ", "RT", "NA" }, { 5, 3, 2, 7, 5 });
+    solution({ "TR", "RT", "TR" }, { 7, 1, 3 });
 
     return 0;
 }
