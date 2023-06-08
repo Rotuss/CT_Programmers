@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
+#include <unordered_set>
 #include <algorithm>
 
 using namespace std;
@@ -352,61 +354,153 @@ using namespace std;
 //}
 
 // 성격 유형 검사하기
-string solution(vector<string> survey, vector<int> choices)
-{
-    string answer = "";
-    map<char, int> m_Type = { {'R',0}, {'T',0},
-                            {'C',0}, {'F',0},
-                            {'J',0}, {'M',0},
-                            {'A',0}, {'N',0} };
+//string solution(vector<string> survey, vector<int> choices)
+//{
+//    string answer = "";
+//    map<char, int> m_Type = { {'R',0}, {'T',0},
+//                            {'C',0}, {'F',0},
+//                            {'J',0}, {'M',0},
+//                            {'A',0}, {'N',0} };
+//
+//    // 1)매우 비동의 3, 2)비동의 2, 3)약간 비동의 1, 4)모르겠음 0, 5)약간 동의 1, 6)동의 2, 7)매우 동의 3
+//    for (int i = 0; i < survey.size(); ++i)
+//    {
+//        switch (choices[i])
+//        {
+//        // case 1~3은 설문지 앞쪽 점수 추가
+//        case 1:
+//        {
+//            m_Type[survey[i][0]] += 3;
+//        }
+//            break;
+//        case 2:
+//        {
+//            m_Type[survey[i][0]] += 2;
+//        }
+//            break;
+//        case 3:
+//        {
+//            m_Type[survey[i][0]] += 1;
+//        }
+//            break;
+//        // case 5~7은 설문지 뒷쪽 점수 추가
+//        case 5:
+//        {
+//            m_Type[survey[i][1]] += 1;
+//        }
+//            break;
+//        case 6:
+//        {
+//            m_Type[survey[i][1]] += 2;
+//        }
+//            break;
+//        case 7:
+//        {
+//            m_Type[survey[i][1]] += 3;
+//        }
+//            break;
+//        default:
+//            break;
+//        }
+//    }
+//
+//    // 타입별 비교 후 타입 결정
+//    m_Type['R'] >= m_Type['T'] ? answer.push_back('R') : answer.push_back('T');
+//    m_Type['C'] >= m_Type['F'] ? answer.push_back('C') : answer.push_back('F');
+//    m_Type['J'] >= m_Type['M'] ? answer.push_back('J') : answer.push_back('M');
+//    m_Type['A'] >= m_Type['N'] ? answer.push_back('A') : answer.push_back('N');
+//
+//    return answer;
+//}
 
-    // 1)매우 비동의 3, 2)비동의 2, 3)약간 비동의 1, 4)모르겠음 0, 5)약간 동의 1, 6)동의 2, 7)매우 동의 3
-    for (int i = 0; i < survey.size(); ++i)
+// 신고 결과 받기(실패)
+vector<int> solution(vector<string> id_list, vector<string> report, int k)
+{
+    vector<int> answer;
+    // 유저, 신고 수
+    unordered_map<string, int> um_Reportcount;
+    // 신고당한 유저, 신고한 유저
+    unordered_map<string, unordered_set<string>> um_Reportlist;
+
+    string s_Reportname;
+    string s_Reportedname;
+
+    for (int i = 0; i < id_list.size(); ++i)
     {
-        switch (choices[i])
-        {
-        // case 1~3은 설문지 앞쪽 점수 추가
-        case 1:
-        {
-            m_Type[survey[i][0]] += 3;
-        }
-            break;
-        case 2:
-        {
-            m_Type[survey[i][0]] += 2;
-        }
-            break;
-        case 3:
-        {
-            m_Type[survey[i][0]] += 1;
-        }
-            break;
-        // case 5~7은 설문지 뒷쪽 점수 추가
-        case 5:
-        {
-            m_Type[survey[i][1]] += 1;
-        }
-            break;
-        case 6:
-        {
-            m_Type[survey[i][1]] += 2;
-        }
-            break;
-        case 7:
-        {
-            m_Type[survey[i][1]] += 3;
-        }
-            break;
-        default:
-            break;
-        }
+        // 유저id 리스트
+        um_Reportcount.insert(make_pair(id_list[i], 0));
     }
 
-    // 타입별 비교 후 타입 결정
-    m_Type['R'] >= m_Type['T'] ? answer.push_back('R') : answer.push_back('T');
-    m_Type['C'] >= m_Type['F'] ? answer.push_back('C') : answer.push_back('F');
-    m_Type['J'] >= m_Type['M'] ? answer.push_back('J') : answer.push_back('M');
-    m_Type['A'] >= m_Type['N'] ? answer.push_back('A') : answer.push_back('N');
+    for (int i = 0; i < report.size(); ++i)
+    {
+        int blank = report[i].find(" ");
+
+        // 신고자, 피신고자 파악
+        s_Reportname = report[i].substr(0, blank);
+        s_Reportedname = report[i].substr(blank + 1, report[i].size());
+
+        um_Reportlist[s_Reportedname].insert(s_Reportname);
+    }
+
+    for (auto listcount : um_Reportlist)
+    {
+        // k번 이상 신고당해 정지 유저id 및 신고 수
+        if (k <= listcount.second.size())
+        {
+            for (auto count : listcount.second)
+            {
+                um_Reportcount[count] += 1;
+            }
+        }
+    }
+    
+    for (auto i : um_Reportcount)
+    {
+        answer.push_back(i.second);
+    }
+
+    return answer;
+}
+
+// 신고 결과 받기(성공)
+vector<int> solution(vector<string> id_list, vector<string> report, int k) {
+    vector<int> answer(id_list.size());
+    // 유저, 신고 수
+    unordered_map<string, int> um_Reportcount;
+    // 신고당한 유저, 신고한 유저
+    unordered_map<string, unordered_set<string>> um_Reportlist;
+
+    string s_Reportname;
+    string s_Reportedname;
+
+    for (int i = 0; i < id_list.size(); ++i)
+    {
+        // 유저id 리스트 인텍스로 기억
+        um_Reportcount.insert(make_pair(id_list[i], i));
+    }
+
+    for (int i = 0; i < report.size(); ++i)
+    {
+        int blank = report[i].find(" ");
+
+        // 신고자, 피신고자 파악
+        s_Reportname = report[i].substr(0, blank);
+        s_Reportedname = report[i].substr(blank + 1, report[i].size());
+
+        um_Reportlist[s_Reportedname].insert(s_Reportname);
+    }
+
+    for (auto listcount : um_Reportlist)
+    {
+        // k번 이상 신고당해 정지 유저id 및 신고 수
+        if (k <= listcount.second.size())
+        {
+            for (auto count : listcount.second)
+            {
+                ++answer[um_Reportcount[count]];
+            }
+        }
+    }
 
     return answer;
 }
@@ -431,8 +525,12 @@ int main(void)
     solution("2020.01.01", { "Z 3", "D 5" }, { "2019.01.01 D", "2019.11.15 Z", "2019.08.02 D", "2019.07.01 D", "2018.12.28 Z" });*/
 
     // 성격 유형 검사하기
-    solution({ "AN", "CF", "MJ", "RT", "NA" }, { 5, 3, 2, 7, 5 });
-    solution({ "TR", "RT", "TR" }, { 7, 1, 3 });
+    /*solution({ "AN", "CF", "MJ", "RT", "NA" }, { 5, 3, 2, 7, 5 });
+    solution({ "TR", "RT", "TR" }, { 7, 1, 3 });*/
+
+    // 신고 결과 받기
+    solution({ "muzi", "frodo", "apeach", "neo" }, { "muzi frodo","apeach frodo","frodo neo","muzi neo","apeach muzi" }, 2);
+    solution({ "con", "ryan" }, { "ryan con", "ryan con", "ryan con", "ryan con" }, 3);
 
     return 0;
 }
