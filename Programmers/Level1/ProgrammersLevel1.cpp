@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <algorithm>
+#include <cctype>
 
 using namespace std;
 
@@ -414,91 +415,155 @@ using namespace std;
 //}
 
 // 신고 결과 받기(실패)
-vector<int> solution(vector<string> id_list, vector<string> report, int k)
-{
-    vector<int> answer;
-    // 유저, 신고 수
-    unordered_map<string, int> um_Reportcount;
-    // 신고당한 유저, 신고한 유저
-    unordered_map<string, unordered_set<string>> um_Reportlist;
-
-    string s_Reportname;
-    string s_Reportedname;
-
-    for (int i = 0; i < id_list.size(); ++i)
-    {
-        // 유저id 리스트
-        um_Reportcount.insert(make_pair(id_list[i], 0));
-    }
-
-    for (int i = 0; i < report.size(); ++i)
-    {
-        int blank = report[i].find(" ");
-
-        // 신고자, 피신고자 파악
-        s_Reportname = report[i].substr(0, blank);
-        s_Reportedname = report[i].substr(blank + 1, report[i].size());
-
-        um_Reportlist[s_Reportedname].insert(s_Reportname);
-    }
-
-    for (auto listcount : um_Reportlist)
-    {
-        // k번 이상 신고당해 정지 유저id 및 신고 수
-        if (k <= listcount.second.size())
-        {
-            for (auto count : listcount.second)
-            {
-                um_Reportcount[count] += 1;
-            }
-        }
-    }
-    
-    for (auto i : um_Reportcount)
-    {
-        answer.push_back(i.second);
-    }
-
-    return answer;
-}
+//vector<int> solution(vector<string> id_list, vector<string> report, int k)
+//{
+//    vector<int> answer;
+//    // 유저, 신고 수
+//    unordered_map<string, int> um_Reportcount;
+//    // 신고당한 유저, 신고한 유저
+//    unordered_map<string, unordered_set<string>> um_Reportlist;
+//
+//    string s_Reportname;
+//    string s_Reportedname;
+//
+//    for (int i = 0; i < id_list.size(); ++i)
+//    {
+//        // 유저id 리스트
+//        um_Reportcount.insert(make_pair(id_list[i], 0));
+//    }
+//
+//    for (int i = 0; i < report.size(); ++i)
+//    {
+//        int blank = report[i].find(" ");
+//
+//        // 신고자, 피신고자 파악
+//        s_Reportname = report[i].substr(0, blank);
+//        s_Reportedname = report[i].substr(blank + 1, report[i].size());
+//
+//        um_Reportlist[s_Reportedname].insert(s_Reportname);
+//    }
+//
+//    for (auto listcount : um_Reportlist)
+//    {
+//        // k번 이상 신고당해 정지 유저id 및 신고 수
+//        if (k <= listcount.second.size())
+//        {
+//            for (auto count : listcount.second)
+//            {
+//                um_Reportcount[count] += 1;
+//            }
+//        }
+//    }
+//    
+//    for (auto i : um_Reportcount)
+//    {
+//        answer.push_back(i.second);
+//    }
+//
+//    return answer;
+//}
 
 // 신고 결과 받기(성공)
-vector<int> solution(vector<string> id_list, vector<string> report, int k) {
-    vector<int> answer(id_list.size());
-    // 유저, 신고 수
-    unordered_map<string, int> um_Reportcount;
-    // 신고당한 유저, 신고한 유저
-    unordered_map<string, unordered_set<string>> um_Reportlist;
+//vector<int> solution(vector<string> id_list, vector<string> report, int k) {
+//    vector<int> answer(id_list.size());
+//    // 유저, 신고 수
+//    unordered_map<string, int> um_Reportcount;
+//    // 신고당한 유저, 신고한 유저
+//    unordered_map<string, unordered_set<string>> um_Reportlist;
+//
+//    string s_Reportname;
+//    string s_Reportedname;
+//
+//    for (int i = 0; i < id_list.size(); ++i)
+//    {
+//        // 유저id 리스트 인텍스로 기억
+//        um_Reportcount.insert(make_pair(id_list[i], i));
+//    }
+//
+//    for (int i = 0; i < report.size(); ++i)
+//    {
+//        int blank = report[i].find(" ");
+//
+//        // 신고자, 피신고자 파악
+//        s_Reportname = report[i].substr(0, blank);
+//        s_Reportedname = report[i].substr(blank + 1, report[i].size());
+//
+//        um_Reportlist[s_Reportedname].insert(s_Reportname);
+//    }
+//
+//    for (auto listcount : um_Reportlist)
+//    {
+//        // k번 이상 신고당해 정지 유저id 및 신고 수
+//        if (k <= listcount.second.size())
+//        {
+//            for (auto count : listcount.second)
+//            {
+//                ++answer[um_Reportcount[count]];
+//            }
+//        }
+//    }
+//
+//    return answer;
+//}
 
-    string s_Reportname;
-    string s_Reportedname;
-
-    for (int i = 0; i < id_list.size(); ++i)
+// 신규 아이디 추천
+string solution(string new_id)
+{
+    string answer = new_id;
+    
+    // 1) 대문자 -> 소문자
+    for (int i = 0; i < answer.size(); ++i)
     {
-        // 유저id 리스트 인텍스로 기억
-        um_Reportcount.insert(make_pair(id_list[i], i));
+        answer[i] = tolower(answer[i]);
     }
-
-    for (int i = 0; i < report.size(); ++i)
+    // 2) 소문자, 숫자, -, _, .를 제외한 모든 문자 제거
+    for (int i = 0; i < answer.size(); )
     {
-        int blank = report[i].find(" ");
-
-        // 신고자, 피신고자 파악
-        s_Reportname = report[i].substr(0, blank);
-        s_Reportedname = report[i].substr(blank + 1, report[i].size());
-
-        um_Reportlist[s_Reportedname].insert(s_Reportname);
-    }
-
-    for (auto listcount : um_Reportlist)
-    {
-        // k번 이상 신고당해 정지 유저id 및 신고 수
-        if (k <= listcount.second.size())
+        if (0 == islower(answer[i]) && 0 == isdigit(answer[i]) && answer[i] != '-' && answer[i] != '_' && answer[i] != '.')
         {
-            for (auto count : listcount.second)
-            {
-                ++answer[um_Reportcount[count]];
-            }
+            answer.erase(i,1);
+        }
+        else
+        {
+            ++i;
+        }
+    }
+    // 3) .가 2번 이상 연속된 부분을 . 1개만 존재하게 치환
+    size_t ddot_pos = 0;
+    while (string::npos != (ddot_pos = answer.find("..")))
+    {
+        answer.replace(ddot_pos, 2, ".");
+    }
+    // 4) .가 처음 혹은 마지막에 위치하면 제거
+    if ('.' == answer.front())
+    {
+        answer.erase(0, 1);
+    }
+    if (0 != answer.size() && '.' == answer.back())
+    {
+        answer.pop_back();
+    }
+    // 5) 빈 문자열일 경우 "a" 대입
+    if (true == answer.empty())
+    {
+        answer += 'a';
+    }
+    // 6) 문자열의 길이가 16자 이상일 경우 첫 15개 문자를 제외한 나머지 문자열 제거
+    if (16 <= answer.size())
+    {
+        answer.erase(15);
+        // 6')제거 후 .가 마지막에 위치한다면 마지막에 위치한 . 제거
+        if ('.' == answer.back())
+        {
+            answer.pop_back();
+        }
+    }
+    // 7) 문자열의 길이가 2자 이하일 경우 마지막 문자를 길이가 3이 될 때까지 반복하여 끝에 붙임
+    if (2 >= answer.size())
+    {
+        for (size_t i = answer.size(); i < 3; ++i)
+        {
+            answer += answer.back();
         }
     }
 
@@ -529,8 +594,15 @@ int main(void)
     solution({ "TR", "RT", "TR" }, { 7, 1, 3 });*/
 
     // 신고 결과 받기
-    solution({ "muzi", "frodo", "apeach", "neo" }, { "muzi frodo","apeach frodo","frodo neo","muzi neo","apeach muzi" }, 2);
-    solution({ "con", "ryan" }, { "ryan con", "ryan con", "ryan con", "ryan con" }, 3);
+    /*solution({ "muzi", "frodo", "apeach", "neo" }, { "muzi frodo","apeach frodo","frodo neo","muzi neo","apeach muzi" }, 2);
+    solution({ "con", "ryan" }, { "ryan con", "ryan con", "ryan con", "ryan con" }, 3);*/
+
+    // 신규 아이디 추천
+    solution("...!@BaT#*..y.abcdefghijklm");
+    solution("z-+.^.");
+    solution("=.=");
+    solution("123_.def");
+    solution("abcdefghijklmn.p");
 
     return 0;
 }
