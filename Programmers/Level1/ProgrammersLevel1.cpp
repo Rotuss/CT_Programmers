@@ -507,63 +507,190 @@ using namespace std;
 //}
 
 // 신규 아이디 추천
-string solution(string new_id)
+//string solution(string new_id)
+//{
+//    string answer = new_id;
+//    
+//    // 1) 대문자 -> 소문자
+//    for (int i = 0; i < answer.size(); ++i)
+//    {
+//        answer[i] = tolower(answer[i]);
+//    }
+//    // 2) 소문자, 숫자, -, _, .를 제외한 모든 문자 제거
+//    for (int i = 0; i < answer.size(); )
+//    {
+//        if (0 == islower(answer[i]) && 0 == isdigit(answer[i]) && answer[i] != '-' && answer[i] != '_' && answer[i] != '.')
+//        {
+//            answer.erase(i,1);
+//        }
+//        else
+//        {
+//            ++i;
+//        }
+//    }
+//    // 3) .가 2번 이상 연속된 부분을 . 1개만 존재하게 치환
+//    size_t ddot_pos = 0;
+//    while (string::npos != (ddot_pos = answer.find("..")))
+//    {
+//        answer.replace(ddot_pos, 2, ".");
+//    }
+//    // 4) .가 처음 혹은 마지막에 위치하면 제거
+//    if ('.' == answer.front())
+//    {
+//        answer.erase(0, 1);
+//    }
+//    if (0 != answer.size() && '.' == answer.back())
+//    {
+//        answer.pop_back();
+//    }
+//    // 5) 빈 문자열일 경우 "a" 대입
+//    if (true == answer.empty())
+//    {
+//        answer += 'a';
+//    }
+//    // 6) 문자열의 길이가 16자 이상일 경우 첫 15개 문자를 제외한 나머지 문자열 제거
+//    if (16 <= answer.size())
+//    {
+//        answer.erase(15);
+//        // 6')제거 후 .가 마지막에 위치한다면 마지막에 위치한 . 제거
+//        if ('.' == answer.back())
+//        {
+//            answer.pop_back();
+//        }
+//    }
+//    // 7) 문자열의 길이가 2자 이하일 경우 마지막 문자를 길이가 3이 될 때까지 반복하여 끝에 붙임
+//    if (2 >= answer.size())
+//    {
+//        for (size_t i = answer.size(); i < 3; ++i)
+//        {
+//            answer += answer.back();
+//        }
+//    }
+//
+//    return answer;
+//}
+
+// 키패드 누르기
+int PositionCalculation(int Handpos, int Inputnum)
 {
-    string answer = new_id;
-    
-    // 1) 대문자 -> 소문자
-    for (int i = 0; i < answer.size(); ++i)
+    int Result = 0;
+    // 손의 숫자 위치와 입력되는 숫자의 차 절댓값 연산
+    int Calcnum = abs(Inputnum - Handpos);
+
+    // 입력되는 숫자와 현재 손의 숫자 위치 거리 계산
+    switch (Calcnum)
     {
-        answer[i] = tolower(answer[i]);
+    case 0:
+    {
+        Result = 0;
     }
-    // 2) 소문자, 숫자, -, _, .를 제외한 모든 문자 제거
-    for (int i = 0; i < answer.size(); )
+        break;
+    case 1:
+    case 3:
     {
-        if (0 == islower(answer[i]) && 0 == isdigit(answer[i]) && answer[i] != '-' && answer[i] != '_' && answer[i] != '.')
+        Result = 1;
+    }
+        break;
+    case 2:
+    case 4:
+    case 6:
+    {
+        Result = 2;
+    }
+        break;
+    case 5:
+    case 7:
+    case 9:
+    {
+        Result = 3;
+    }
+        break;
+    case 8:
+    case 10:
+    {
+        Result = 4;
+    }
+        break;
+    default:
+        break;
+    }
+
+    return Result;
+}
+
+string solution(vector<int> numbers, string hand)
+{
+    string answer = "";
+    int i_number = 0;
+    // * == 10, # == 12 시작 지점
+    // 왼손 오른손 숫자 위치 기억
+    int i_Lpos = 10;
+    int i_Rpos = 12;
+
+    for (int i = 0; i < numbers.size(); ++i)
+    {
+        // 0 == 11
+        if (0 == numbers[i])
         {
-            answer.erase(i,1);
+            i_number = 11;
         }
+        // 1~9 대입
         else
         {
-            ++i;
+            i_number = numbers[i];
         }
-    }
-    // 3) .가 2번 이상 연속된 부분을 . 1개만 존재하게 치환
-    size_t ddot_pos = 0;
-    while (string::npos != (ddot_pos = answer.find("..")))
-    {
-        answer.replace(ddot_pos, 2, ".");
-    }
-    // 4) .가 처음 혹은 마지막에 위치하면 제거
-    if ('.' == answer.front())
-    {
-        answer.erase(0, 1);
-    }
-    if (0 != answer.size() && '.' == answer.back())
-    {
-        answer.pop_back();
-    }
-    // 5) 빈 문자열일 경우 "a" 대입
-    if (true == answer.empty())
-    {
-        answer += 'a';
-    }
-    // 6) 문자열의 길이가 16자 이상일 경우 첫 15개 문자를 제외한 나머지 문자열 제거
-    if (16 <= answer.size())
-    {
-        answer.erase(15);
-        // 6')제거 후 .가 마지막에 위치한다면 마지막에 위치한 . 제거
-        if ('.' == answer.back())
+
+        switch (i_number)
         {
-            answer.pop_back();
+        case 1:
+        case 4:
+        case 7:
+        {
+            i_Lpos = i_number;
+            answer += 'L';
         }
-    }
-    // 7) 문자열의 길이가 2자 이하일 경우 마지막 문자를 길이가 3이 될 때까지 반복하여 끝에 붙임
-    if (2 >= answer.size())
-    {
-        for (size_t i = answer.size(); i < 3; ++i)
+            break;
+        case 3:
+        case 6:
+        case 9:
         {
-            answer += answer.back();
+            i_Rpos = i_number;
+            answer += 'R';
+        }
+            break;
+        default:
+        {
+            // 왼손 기준 현재 입력할 숫자 거리값
+            int Left = PositionCalculation(i_Lpos, i_number);
+            // 오른손 기준 현재 입력할 숫자 거리값
+            int Right = PositionCalculation(i_Rpos, i_number);
+
+            if (Left < Right)
+            {
+                i_Lpos = i_number;
+                answer += 'L';
+            }
+            else if(Left > Right)
+            {
+                i_Rpos = i_number;
+                answer += 'R';
+            }
+            // 거리값이 같을 경우 손잡이에 따라 손 지정
+            else if (Left == Right)
+            {
+                if ("left" == hand)
+                {
+                    i_Lpos = i_number;
+                    answer += 'L';
+                }
+                else if ("right" == hand)
+                {
+                    i_Rpos = i_number;
+                    answer += 'R';
+                }
+            }
+        }
+            break;
         }
     }
 
@@ -598,11 +725,16 @@ int main(void)
     solution({ "con", "ryan" }, { "ryan con", "ryan con", "ryan con", "ryan con" }, 3);*/
 
     // 신규 아이디 추천
-    solution("...!@BaT#*..y.abcdefghijklm");
+    /*solution("...!@BaT#*..y.abcdefghijklm");
     solution("z-+.^.");
     solution("=.=");
     solution("123_.def");
-    solution("abcdefghijklmn.p");
+    solution("abcdefghijklmn.p");*/
+
+    // 키패드 누르기
+    solution({ 1, 3, 4, 5, 8, 2, 1, 4, 5, 9, 5 }, "right");
+    solution({ 7, 0, 8, 2, 8, 3, 1, 5, 7, 6, 2 }, "left");
+    solution({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 }, "right");
 
     return 0;
 }
