@@ -4,6 +4,7 @@
 #include <map>
 #include <unordered_map>
 #include <unordered_set>
+#include <stack>
 #include <algorithm>
 #include <cctype>
 
@@ -571,125 +572,165 @@ using namespace std;
 //}
 
 // 키패드 누르기
-int PositionCalculation(int Handpos, int Inputnum)
+//int PositionCalculation(int Handpos, int Inputnum)
+//{
+//    int Result = 0;
+//    // 손의 숫자 위치와 입력되는 숫자의 차 절댓값 연산
+//    int Calcnum = abs(Inputnum - Handpos);
+//
+//    // 입력되는 숫자와 현재 손의 숫자 위치 거리 계산
+//    switch (Calcnum)
+//    {
+//    case 0:
+//    {
+//        Result = 0;
+//    }
+//        break;
+//    case 1:
+//    case 3:
+//    {
+//        Result = 1;
+//    }
+//        break;
+//    case 2:
+//    case 4:
+//    case 6:
+//    {
+//        Result = 2;
+//    }
+//        break;
+//    case 5:
+//    case 7:
+//    case 9:
+//    {
+//        Result = 3;
+//    }
+//        break;
+//    case 8:
+//    case 10:
+//    {
+//        Result = 4;
+//    }
+//        break;
+//    default:
+//        break;
+//    }
+//
+//    return Result;
+//}
+//
+//string solution(vector<int> numbers, string hand)
+//{
+//    string answer = "";
+//    int i_number = 0;
+//    // * == 10, # == 12 시작 지점
+//    // 왼손 오른손 숫자 위치 기억
+//    int i_Lpos = 10;
+//    int i_Rpos = 12;
+//
+//    for (int i = 0; i < numbers.size(); ++i)
+//    {
+//        // 0 == 11
+//        if (0 == numbers[i])
+//        {
+//            i_number = 11;
+//        }
+//        // 1~9 대입
+//        else
+//        {
+//            i_number = numbers[i];
+//        }
+//
+//        switch (i_number)
+//        {
+//        case 1:
+//        case 4:
+//        case 7:
+//        {
+//            i_Lpos = i_number;
+//            answer += 'L';
+//        }
+//            break;
+//        case 3:
+//        case 6:
+//        case 9:
+//        {
+//            i_Rpos = i_number;
+//            answer += 'R';
+//        }
+//            break;
+//        default:
+//        {
+//            // 왼손 기준 현재 입력할 숫자 거리값
+//            int Left = PositionCalculation(i_Lpos, i_number);
+//            // 오른손 기준 현재 입력할 숫자 거리값
+//            int Right = PositionCalculation(i_Rpos, i_number);
+//
+//            if (Left < Right)
+//            {
+//                i_Lpos = i_number;
+//                answer += 'L';
+//            }
+//            else if(Left > Right)
+//            {
+//                i_Rpos = i_number;
+//                answer += 'R';
+//            }
+//            // 거리값이 같을 경우 손잡이에 따라 손 지정
+//            else if (Left == Right)
+//            {
+//                if ("left" == hand)
+//                {
+//                    i_Lpos = i_number;
+//                    answer += 'L';
+//                }
+//                else if ("right" == hand)
+//                {
+//                    i_Rpos = i_number;
+//                    answer += 'R';
+//                }
+//            }
+//        }
+//            break;
+//        }
+//    }
+//
+//    return answer;
+//}
+
+// 크레인 인형뽑기 게임
+int solution(vector<vector<int>> board, vector<int> moves)
 {
-    int Result = 0;
-    // 손의 숫자 위치와 입력되는 숫자의 차 절댓값 연산
-    int Calcnum = abs(Inputnum - Handpos);
+    int answer = 0;
+    // 인형 뽑기 바구니
+    stack<int> picked;
 
-    // 입력되는 숫자와 현재 손의 숫자 위치 거리 계산
-    switch (Calcnum)
+    for (int i = 0; i < moves.size(); ++i)
     {
-    case 0:
-    {
-        Result = 0;
-    }
-        break;
-    case 1:
-    case 3:
-    {
-        Result = 1;
-    }
-        break;
-    case 2:
-    case 4:
-    case 6:
-    {
-        Result = 2;
-    }
-        break;
-    case 5:
-    case 7:
-    case 9:
-    {
-        Result = 3;
-    }
-        break;
-    case 8:
-    case 10:
-    {
-        Result = 4;
-    }
-        break;
-    default:
-        break;
-    }
-
-    return Result;
-}
-
-string solution(vector<int> numbers, string hand)
-{
-    string answer = "";
-    int i_number = 0;
-    // * == 10, # == 12 시작 지점
-    // 왼손 오른손 숫자 위치 기억
-    int i_Lpos = 10;
-    int i_Rpos = 12;
-
-    for (int i = 0; i < numbers.size(); ++i)
-    {
-        // 0 == 11
-        if (0 == numbers[i])
+        //현재 뽑기 위치
+        int pick = moves[i] - 1;
+        for (int j = 0; j < board.size(); ++j)
         {
-            i_number = 11;
-        }
-        // 1~9 대입
-        else
-        {
-            i_number = numbers[i];
-        }
-
-        switch (i_number)
-        {
-        case 1:
-        case 4:
-        case 7:
-        {
-            i_Lpos = i_number;
-            answer += 'L';
-        }
-            break;
-        case 3:
-        case 6:
-        case 9:
-        {
-            i_Rpos = i_number;
-            answer += 'R';
-        }
-            break;
-        default:
-        {
-            // 왼손 기준 현재 입력할 숫자 거리값
-            int Left = PositionCalculation(i_Lpos, i_number);
-            // 오른손 기준 현재 입력할 숫자 거리값
-            int Right = PositionCalculation(i_Rpos, i_number);
-
-            if (Left < Right)
+            if (0 == board[j][pick])
             {
-                i_Lpos = i_number;
-                answer += 'L';
+                continue;
             }
-            else if(Left > Right)
+
+            // 뽑기 위치가 0이 아니고 현재 뽑히는 인형과 이미 뽑힌 인형 파악 및 바구니 정리
+            // 바구니가 비어 있지 않고 스택 바구니의 최근 인형과 현재 뽑힌 인형이 같을 경우 인형 터뜨리기
+            if (false == picked.empty() && picked.top() == board[j][pick])
             {
-                i_Rpos = i_number;
-                answer += 'R';
+                // 인형 두개가 터지므로 +2
+                answer += 2;
+                // 바구니에 있는 인형 없애기
+                picked.pop();
             }
-            // 거리값이 같을 경우 손잡이에 따라 손 지정
-            else if (Left == Right)
+            else
             {
-                if ("left" == hand)
-                {
-                    i_Lpos = i_number;
-                    answer += 'L';
-                }
-                else if ("right" == hand)
-                {
-                    i_Rpos = i_number;
-                    answer += 'R';
-                }
+                picked.push(board[j][pick]);
             }
-        }
+            // 뽑힌 인형의 자리를 빈 곳으로 설정
+            board[j][pick] = 0;
             break;
         }
     }
@@ -732,9 +773,12 @@ int main(void)
     solution("abcdefghijklmn.p");*/
 
     // 키패드 누르기
-    solution({ 1, 3, 4, 5, 8, 2, 1, 4, 5, 9, 5 }, "right");
+    /*solution({ 1, 3, 4, 5, 8, 2, 1, 4, 5, 9, 5 }, "right");
     solution({ 7, 0, 8, 2, 8, 3, 1, 5, 7, 6, 2 }, "left");
-    solution({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 }, "right");
+    solution({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 }, "right");*/
+
+    // 크레인 인형뽑기 게임
+    solution({ { 0,0,0,0,0 },{ 0,0,1,0,3 },{ 0,2,5,0,1 },{ 4,2,4,4,2 },{ 3,5,1,3,1 } }, { 1,5,3,5,1,2,1,4 });
 
     return 0;
 }
