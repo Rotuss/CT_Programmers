@@ -699,44 +699,44 @@ using namespace std;
 //}
 
 // 크레인 인형뽑기 게임
-int solution(vector<vector<int>> board, vector<int> moves)
-{
-    int answer = 0;
-    // 인형 뽑기 바구니
-    stack<int> picked;
-
-    for (int i = 0; i < moves.size(); ++i)
-    {
-        //현재 뽑기 위치
-        int pick = moves[i] - 1;
-        for (int j = 0; j < board.size(); ++j)
-        {
-            if (0 == board[j][pick])
-            {
-                continue;
-            }
-
-            // 뽑기 위치가 0이 아니고 현재 뽑히는 인형과 이미 뽑힌 인형 파악 및 바구니 정리
-            // 바구니가 비어 있지 않고 스택 바구니의 최근 인형과 현재 뽑힌 인형이 같을 경우 인형 터뜨리기
-            if (false == picked.empty() && picked.top() == board[j][pick])
-            {
-                // 인형 두개가 터지므로 +2
-                answer += 2;
-                // 바구니에 있는 인형 없애기
-                picked.pop();
-            }
-            else
-            {
-                picked.push(board[j][pick]);
-            }
-            // 뽑힌 인형의 자리를 빈 곳으로 설정
-            board[j][pick] = 0;
-            break;
-        }
-    }
-
-    return answer;
-}
+//int solution(vector<vector<int>> board, vector<int> moves)
+//{
+//    int answer = 0;
+//    // 인형 뽑기 바구니
+//    stack<int> picked;
+//
+//    for (int i = 0; i < moves.size(); ++i)
+//    {
+//        //현재 뽑기 위치
+//        int pick = moves[i] - 1;
+//        for (int j = 0; j < board.size(); ++j)
+//        {
+//            if (0 == board[j][pick])
+//            {
+//                continue;
+//            }
+//
+//            // 뽑기 위치가 0이 아니고 현재 뽑히는 인형과 이미 뽑힌 인형 파악 및 바구니 정리
+//            // 바구니가 비어 있지 않고 스택 바구니의 최근 인형과 현재 뽑힌 인형이 같을 경우 인형 터뜨리기
+//            if (false == picked.empty() && picked.top() == board[j][pick])
+//            {
+//                // 인형 두개가 터지므로 +2
+//                answer += 2;
+//                // 바구니에 있는 인형 없애기
+//                picked.pop();
+//            }
+//            else
+//            {
+//                picked.push(board[j][pick]);
+//            }
+//            // 뽑힌 인형의 자리를 빈 곳으로 설정
+//            board[j][pick] = 0;
+//            break;
+//        }
+//    }
+//
+//    return answer;
+//}
 
 int main(void)
 {
@@ -778,7 +778,7 @@ int main(void)
     solution({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 }, "right");*/
 
     // 크레인 인형뽑기 게임
-    solution({ { 0,0,0,0,0 },{ 0,0,1,0,3 },{ 0,2,5,0,1 },{ 4,2,4,4,2 },{ 3,5,1,3,1 } }, { 1,5,3,5,1,2,1,4 });
+    //solution({ { 0,0,0,0,0 },{ 0,0,1,0,3 },{ 0,2,5,0,1 },{ 4,2,4,4,2 },{ 3,5,1,3,1 } }, { 1,5,3,5,1,2,1,4 });
 
     return 0;
 }
