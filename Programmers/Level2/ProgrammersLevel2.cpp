@@ -96,14 +96,18 @@ int solution(vector<vector<string>> clothes)
     unordered_map<string, int> umClothesMatch;
     for (int i = 0; i < clothes.size(); ++i)
     {
+        // clothes의 종류(처음이면 0, 처음이 아니면 기존 + 1)
         ++umClothesMatch[clothes[i][1]];
     }
 
     for (auto Iter : umClothesMatch)
     {
+        // 종류의 가짓수 전부 곱
+        // 안입는 경우 고려하여 + 1
         answer *= (Iter.second + 1);
     }
 
+    // 전부 안 입는 경우 제외해야 하므로 -1
     answer -= 1;
     return answer;
 }
