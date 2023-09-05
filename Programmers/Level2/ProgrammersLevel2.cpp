@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <stack>
+#include <unordered_map>
 #include <algorithm>
 
 using namespace std;
@@ -53,37 +54,57 @@ using namespace std;
 //}
 
 // 구명보트
-int solution(vector<int> people, int limit) {
-    int answer = 0;
+//int solution(vector<int> people, int limit) {
+//    int answer = 0;
+//
+//    // 무게 합산 100 기준으로만 생각한 잘못된 오류
+//    //for (int i = 0; i < people.size(); ++i)
+//    //{
+//    //    for (int j = i + 1; j < people.size(); ++j)
+//    //    {
+//    //        if (limit >= people[i] + people[j])
+//    //        {
+//    //            people.erase(people.begin() + j);
+//    //            break;
+//    //        }
+//    //    }
+//    //    ++answer;
+//    //}
+//
+//    sort(people.begin(), people.end());
+//
+//    vector<int>::iterator Iter_begin = people.begin();
+//    vector<int>::iterator Iter_end = people.end() - 1;
+//    while (Iter_begin <= Iter_end)
+//    {
+//        if (limit >= *Iter_begin + *Iter_end)
+//        {
+//            ++Iter_begin;
+//        }
+//        --Iter_end;
+//        ++answer;
+//    }
+//
+//    return answer;
+//}
 
-    // 무게 합산 100 기준으로만 생각한 잘못된 오류
-    //for (int i = 0; i < people.size(); ++i)
-    //{
-    //    for (int j = i + 1; j < people.size(); ++j)
-    //    {
-    //        if (limit >= people[i] + people[j])
-    //        {
-    //            people.erase(people.begin() + j);
-    //            break;
-    //        }
-    //    }
-    //    ++answer;
-    //}
+// 의상
+int solution(vector<vector<string>> clothes)
+{
+    int answer = 1;
 
-    sort(people.begin(), people.end());
-
-    vector<int>::iterator Iter_begin = people.begin();
-    vector<int>::iterator Iter_end = people.end() - 1;
-    while (Iter_begin <= Iter_end)
+    unordered_map<string, int> umClothesMatch;
+    for (int i = 0; i < clothes.size(); ++i)
     {
-        if (limit >= *Iter_begin + *Iter_end)
-        {
-            ++Iter_begin;
-        }
-        --Iter_end;
-        ++answer;
+        ++umClothesMatch[clothes[i][1]];
     }
 
+    for (auto Iter : umClothesMatch)
+    {
+        answer *= (Iter.second + 1);
+    }
+
+    answer -= 1;
     return answer;
 }
 
@@ -99,8 +120,12 @@ int main(void)
     solution(24, 24);*/
 
     // 구명보트
-    solution({ 70, 50, 80, 50 }, 100);
-    solution({ 70, 80, 50 }, 100);
+    /*solution({ 70, 50, 80, 50 }, 100);
+    solution({ 70, 80, 50 }, 100);*/
+
+    // 의상
+    solution({ {"yellow_hat", "headgear"} ,{"blue_sunglasses", "eyewear"},{"green_turban", "headgear"} });
+    solution({ {"crow_mask", "face"} ,{"blue_sunglasses", "face"},{"smoky_makeup", "face"} });
 
     return 0;
 }
