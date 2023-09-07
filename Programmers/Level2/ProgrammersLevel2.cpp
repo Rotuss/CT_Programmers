@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <queue>
 #include <stack>
 #include <unordered_map>
 #include <algorithm>
@@ -89,26 +90,79 @@ using namespace std;
 //}
 
 // 의상
-int solution(vector<vector<string>> clothes)
+//int solution(vector<vector<string>> clothes)
+//{
+//    int answer = 1;
+//
+//    unordered_map<string, int> umClothesMatch;
+//    for (int i = 0; i < clothes.size(); ++i)
+//    {
+//        // clothes의 종류(처음이면 0, 처음이 아니면 기존 + 1)
+//        ++umClothesMatch[clothes[i][1]];
+//    }
+//
+//    for (auto Iter : umClothesMatch)
+//    {
+//        // 종류의 가짓수 전부 곱
+//        // 안입는 경우 고려하여 + 1
+//        answer *= (Iter.second + 1);
+//    }
+//
+//    // 전부 안 입는 경우 제외해야 하므로 -1
+//    answer -= 1;
+//    return answer;
+//}
+
+// 기능개발
+vector<int> solution(vector<int> progresses, vector<int> speeds)
 {
-    int answer = 1;
+    vector<int> answer;
+    queue<int> qHandout;
+    int iDay = 0;
+    int iCheck = 0;
+    int iCount = 0;
 
-    unordered_map<string, int> umClothesMatch;
-    for (int i = 0; i < clothes.size(); ++i)
+    // 남은 일자 계산
+    for (int i = 0; i < progresses.size(); ++i)
     {
-        // clothes의 종류(처음이면 0, 처음이 아니면 기존 + 1)
-        ++umClothesMatch[clothes[i][1]];
+        iDay = (100 - progresses[i]) / speeds[i];
+
+        if (0 != (100 - progresses[i]) % speeds[i])
+        {
+            ++iDay;
+        }
+
+        qHandout.push(iDay);
     }
 
-    for (auto Iter : umClothesMatch)
+    // 첫 배출 정보 및 수
+    iCheck = qHandout.front();
+    qHandout.pop();
+    ++iCount;
+
+    // 배출 카운트 및 검토
+    while (0 <= qHandout.size())
     {
-        // 종류의 가짓수 전부 곱
-        // 안입는 경우 고려하여 + 1
-        answer *= (Iter.second + 1);
+        // 모든 배출일자가 빠지면 남은 카운트 추가
+        if (0 == qHandout.size())
+        {
+            answer.push_back(iCount);
+            break;
+        }
+        else if (iCheck >= qHandout.front())
+        {
+            ++iCount;
+            qHandout.pop();
+        }
+        else
+        {
+            answer.push_back(iCount);
+            iCheck = qHandout.front();
+            qHandout.pop();
+            iCount = 1;
+        }
     }
 
-    // 전부 안 입는 경우 제외해야 하므로 -1
-    answer -= 1;
     return answer;
 }
 
@@ -128,8 +182,12 @@ int main(void)
     solution({ 70, 80, 50 }, 100);*/
 
     // 의상
-    solution({ {"yellow_hat", "headgear"} ,{"blue_sunglasses", "eyewear"},{"green_turban", "headgear"} });
-    solution({ {"crow_mask", "face"} ,{"blue_sunglasses", "face"},{"smoky_makeup", "face"} });
+    /*solution({ {"yellow_hat", "headgear"} ,{"blue_sunglasses", "eyewear"},{"green_turban", "headgear"} });
+    solution({ {"crow_mask", "face"} ,{"blue_sunglasses", "face"},{"smoky_makeup", "face"} });*/
+
+    // 기능개발
+    solution({ 93, 30, 55 }, { 1, 30, 5 });
+    solution({ 95, 90, 99, 99, 80, 99 }, { 1, 1, 1, 1, 1, 1 });
 
     return 0;
 }
